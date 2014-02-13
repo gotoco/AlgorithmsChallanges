@@ -25,9 +25,11 @@ class Graph
 
   #Simple method to write whole graph structure
   def write
-    @vertexes.each do |vertex|
-      print vertex.o
-      print vertex.number
+    @vertexes.each_with_index  do |vertex, index|
+      print "#{index} :  "
+      # For each edges that come out from vertex with number x
+      # print vertex number to which edge leads
+      vertex.each{ |eg| print eg.v }
     end
   end
 

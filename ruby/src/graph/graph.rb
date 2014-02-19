@@ -26,11 +26,15 @@ class Graph
   #Simple method to write whole graph structure
   def write
     @vertexes.each_with_index  do |vertex, index|
-      print "#{index} :  "
+      print "\n #{index} :  "
       # For each edges that come out from vertex with number x
       # print vertex number to which edge leads
-      vertex.each{ |eg| print eg.v }
+      vertex.each{ |eg| print " #{eg.v} " }
     end
+  end
+
+  def get_vertex(number_of_vertex)
+      return @vertexes[number_of_vertex]
   end
 
   # This method add to graph new direct edge between two vertexes
@@ -41,6 +45,11 @@ class Graph
   #   - +v_target_number+ -> the number of target vertex to which enters edge
   #   - +edge_object+ -> the edge object, if any object is pass, default edge will be created
   def add_edge_d(v_source_number, v_target_number, edge_object=Edge.new(nil, v_target_number))
+
+    if @vertexes[v_source_number] == nil
+      @vertexes[v_source_number] = Vertex.new(edge_object, Array.new, v_source_number)
+    end
+
     @vertexes[v_source_number].push edge_object
   end
 
@@ -56,18 +65,25 @@ class Graph
   #   - +v_target_number+ -> the number of target vertex to which enters edge
   #   - +edge_object+ -> the base edge object to be decorated by Edge class,
   #                       if any object is pass, default edge will be created
-  def add_edge_u(v_source_number, v_target_number, edge_object)
+  def add_edge_u(v_source_number, v_target_number, edge_object=Edge.new(nil, v_target_number))
     eg = Edge.new(edge_object, v_target_number)
     loop = 0
     if v_source_number ==  v_target_number
       loop = loop+1
     end
 
+    if @vertexes[v_source_number] == nil
+      @vertexes[v_source_number] = Vertex.new(edge_object, Array.new, v_source_number)
+    end
+    if @vertexes[v_target_number] == nil
+      @vertexes[v_target_number] = Vertex.new(edge_object, Array.new, v_target_number)
+    end
+
     eg.rev= @vertexes[v_target_number].size + loop
     @vertexes[v_source_number].push(eg)
-    eg.rev = @vertexes[eg.v = v_source_number].size - 1;
-    @vertexes[v_target_number].push(eg)
-
+    eg2 = Edge.new(edge_object, v_source_number)
+    eg2.rev = @vertexes[v_source_number].size - 1;
+    @vertexes[v_target_number].push(eg2)
   end
 
 end
@@ -83,10 +99,16 @@ end
 # out of vertex v: FOREACH (it, g [v])
 #
 # - For example vertex can be a City or geometrical lump with additional
-#features and properties.
+# features and properties.
 #########################################################################
 class Vertex < Array
 
+  ## Simple constructor of the Vertex object
+  # * *Args*    :
+  #   - +object+ -> the object that will be represented by this vertex
+  #   - +edges_list+ -> list of outgoing edges from this vertex
+  #   - +vertex_number+ -> conventional number of this vertex in graph.
+  #
   def initialize(object, edges_list, vertex_number)
     super edges_list
     @o = object

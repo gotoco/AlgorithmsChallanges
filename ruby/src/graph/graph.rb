@@ -86,6 +86,51 @@ class Graph
     @vertexes[v_target_number].push(eg2)
   end
 
+  # After the BFS algorithm, field int t vertex contains the distance from the source
+  # (-1 if the vertex is unreachable from the source),
+  # the field int s contains the number of father in the BFS tree
+  # (which is the source for the vertex and the vertex search is unattainable -1)
+  #
+  # * *Args*    :
+  #   - +source_vertex+ -> the number of source vertex in BFS algorithm 0 if nil
+  def bfs(source_vertex_number=0)
+    ##Start
+    s = source_vertex_number
+    #For each vertex in the graph is set to the initial value of the variable
+    #t and s to -1. Source search has time equal to 0
+    @vertexes.each_index{|v, i| v.t=-1; v.s=-1}
+    @vertexes[s].t=0
+
+    #BFS algorithm is implemented using a FIFO queue, which inserted
+    #consecutive vertices are waiting to be processed
+    qu = Array.new(@vertexes.size);
+    b = e = 0;
+    #insert into queue source
+    qu[0] = s
+    #while we have vertexes in queue
+    while(b <= e)
+      s=qu[b]; b+=b
+
+      #For each outgoing edge of the currently processed vertex,
+      #if the vertex to which it leads has not yet been inserted into the
+      #queue, insert it, and determine values of variables int t and int s
+      @vertexes[s].each do |eg|
+        if @vertexes[eg.v].t == -1
+            e+=e
+            @vertexes[qu[e]].t = @vertexes[s].t+1
+            @vertexes[eg.v].s = s
+        end
+
+      end
+
+    end
+
+  end
+
+  def dfs
+
+  end
+
 end
 
 #########################################################################
@@ -124,6 +169,11 @@ class Vertex < Array
   attr_accessor :o
   ##Public access to number of the vertex
   attr_accessor :number
+  ##Time/Dimmension from BFS source vertex
+  # (-1 if this vertex is unreachable from source)
+  attr_accessor :t
+  ##Father in the BFS algorithm tree
+  attr_accessor :s
 
 end
 

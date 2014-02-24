@@ -82,13 +82,21 @@ class Graph
     @vertexes[v_target_number].push(eg2)
   end
 
+  #Breadth-first search (BFS) is a strategy for searching in a graph when
+  # search is limited to essentially two operations:
+  # (a) visit and inspect a node of a graph;
+  # (b) gain access to visit the nodes that neighbor the currently visited node.
+  # The BFS begins at a root node and inspects all the neighboring nodes.
+  # Then for each of those neighbor nodes in turn,
+  # it inspects their neighbor nodes which were unvisited, and so on.
+  #
   # After the BFS algorithm, field int t vertex contains the distance from the source
   # (-1 if the vertex is unreachable from the source),
   # the field int s contains the number of father in the BFS tree
   # (which is the source for the vertex and the vertex search is unattainable -1)
   #
   # * *Args*    :
-  #   - +source_vertex+ -> the number of source vertex in BFS algorithm 0 if nil
+  #   - +source_vertex+ -> the number of source vertex in BFS algorithm 0 if no arg passed
   def bfs(source_vertex_number=0)
     ##Start
     s = source_vertex_number
@@ -132,16 +140,82 @@ class Graph
   # it show each | Vertex : x | Time from source to v : t | Father in BFS tree : s |
   def write_bfs
     @vertexes.each do |v|
-
         print " Vertex : #{v.number} | t : #{v.t} | s : #{v.s} \n"
-
-
     end
+  end
+
+  #Depth-first search (DFS) algorithm for traversing or searching tree or graph data structures.
+  # One starts at the root (selecting some arbitrary node as the root in the case of a graph)
+  # and explores as far as possible along each branch before backtracking.
+  #
+  # After DFS algorithm fields on Vertex "d" and "f" are represented correspondingly
+  # the inputs and outputs from the top, while s is the number of father-vertex : father
+  # in the designated DFS forest.
+  # This version of DFS is iterative implementation of this algorithm.
+  #
+  # * *Args*    :
+  #   - +source_vertex+ -> the number of source vertex in DFS algorithm -1 if no arg passed
+  def dfs(source_vertex_number=-1)
+    ##Start!
+    e=source_vertex_number
+    #Create stack to handle processed vertexes
+    st = Array.new(@vertexes.size)
+    #Time zero, iterator zero, b-start search point
+    t = -1; i = 0; b = 0;
+    e == -1 ? e = @vertexes.size - 1 : b = e
+
+    #Set each vertexes as unvisited
+    @vertexes.each_index{|i|  @vertexes[i].d = @vertexes[i].f = @vertexes[i].s = -1;}
+
+    #FOR EACH vertexes in the range [b..e], if vertex was unvisited..
+    for s in b..e  ; if @vertexes[s].d == -1
+        #Insert vertex on the stack and set it to the appropriate time of entry.
+        #Vertex variable "f" is used as temporarily counter for unprocessed
+        #Outgoing edges of the vertex
+        t+=1 # time is going so increment time
+        @vertexes[st[i]=s].d = t
+        i+=1 #incremented iterator
+        @vertexes[s].f = @vertexes[s].size
+
+        #While stack is not empty..
+           while(i>0)
+             sp = st[i-1]
+             #Parse the next Edge leading off from the current vertex or
+             # remove it from the stack (when there is no edge anymore).
+             if @vertexes[sp].f == 0
+               t+=1 #time is going
+               @vertexes[sp].f = t; i-=1; #we have to iterate one v less
+             else
+               #If vertex, to whose leading Edge, was not yet visited then..
+               lv = @vertexes[sp].f -= 1
+               sp = @vertexes[sp][lv].v
+               if @vertexes[sp].d == -1
+                  #Set the number of vertex-father in the DFS tree, and set the number of unprocessed
+                  #outgoing edges of the vertex
+                  @vertexes[sp].s = st[i-1]
+                  @vertexes[sp].f = @vertexes[sp].size
+                  #Put current vertex on stack and set it entry time
+                  i+=1; t+=1 #we have new vertex on stack to process, and time is going
+                  @vertexes[st[i] = s].d = t;
+               end
+             end
+           end
+
+    end; end;
 
   end
 
+  #Simply method that show graph structure after dfs algorithm
+  # it show each | Vertex : x | Enter time : d | Exit time : f | Father in DFS tree : s |
+  def write_dfs
+    @vertexes.each do |v|
+      print " Vertex : #{v.number} | d : #{v.d} | f : #{v.f} | s : #{v.s} \n"
+    end
+  end
 
-  def dfs
+  # Simply method to clean up after searching algorithms
+  # because bfs and dfs handle data in graph structure
+  def clean_after_searching
 
   end
 
@@ -175,8 +249,12 @@ class Vertex < Array
     super edges_list
     @o = object
     @number = vertex_number
+
+    #Searching algorithms values
     @t = -1
     @s = -1
+    @d = -1
+    @f = -1
   end
 
   ##Decorator access method
@@ -186,13 +264,22 @@ class Vertex < Array
 
   ##Public access to decorated object
   attr_accessor :o
+
   ##Public access to number of the vertex
   attr_accessor :number
+
   ##Time/Dimension from BFS source vertex
   # (-1 if this vertex is unreachable from source)
   attr_accessor :t
+
   ##Father in the BFS algorithm tree
   attr_accessor :s
+
+  ##Enter time of DFS algorithm
+  attr_accessor :d
+
+  ##Exit time of DFS algorithm
+  attr_accessor :f
 
 end
 

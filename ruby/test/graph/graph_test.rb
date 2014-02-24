@@ -80,16 +80,20 @@ class GraphTest < MiniTest::Unit::TestCase
     graph.add_edge_u(4, 5)
 
     graph.bfs(2)
-
     #########################################################################################
     # For Given graph structure and source vertex s=2 we expect BFS tree as follow
     # graph.write_bfs will show us:
+    # Vertex : 0 | t : -1 | s : -1   <- undirected vertex
     # Vertex : 1 | t : 1 | s : 2
     # Vertex : 2 | t : 0 | s : -1    <- source in BFS algorithm
     # Vertex : 3 | t : 2 | s : 1
     # Vertex : 4 | t : 1 | s : 2
     # Vertex : 5 | t : 1 | s : 2
     #########################################################################################
+
+    assert_equal(graph.vertexes[0].t, -1)
+    assert_equal(graph.vertexes[0].s, -1)
+
     assert_equal(graph.vertexes[1].t, 1)
     assert_equal(graph.vertexes[1].s, 2)
 

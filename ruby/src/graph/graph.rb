@@ -13,14 +13,10 @@
 # handled in individuals vertexes between which exist connections.
 #########################################################################
 class Graph
-=begin
-  def initialize(*vertexes)
-    @vertexes = vertexes
-  end
-=end
 
   def initialize(number_of_vertex)
     @vertexes = Array.new(number_of_vertex)
+    @vertexes.each_with_index{|v, i| @vertexes[i] = Vertex.new(nil, Array.new, i)}
   end
 
   #Simple method to write whole graph structure
@@ -47,7 +43,7 @@ class Graph
   def add_edge_d(v_source_number, v_target_number, edge_object=Edge.new(nil, v_target_number))
 
     if @vertexes[v_source_number] == nil
-      @vertexes[v_source_number] = Vertex.new(edge_object, Array.new, v_source_number)
+      @vertexes[v_source_number].o = edge_object
     end
 
     @vertexes[v_source_number].push edge_object
@@ -113,14 +109,14 @@ class Graph
     qu[b = e = 0] = s
     #while we have vertexes in queue
     while(b <= e)
-      s=qu[b]; b = b+1 ;
+      s=qu[b]; b +=1 ;
 
       #For each outgoing edge of the currently processed vertex,
       #if the vertex to which it leads has not yet been inserted into the
       #queue, insert it, and determine values of variables int t and int s
       @vertexes[s].each do |eg|
         if @vertexes[eg.v].t == -1
-            e=e+1
+            e+=1
             qu[e] = eg.v
             @vertexes[eg.v].t = @vertexes[s].t+1
             @vertexes[eg.v].s = s
@@ -136,9 +132,9 @@ class Graph
   # it show each | Vertex : x | Time from source to v : t | Father in BFS tree : s |
   def write_bfs
     @vertexes.each do |v|
-      if v != nil
+
         print " Vertex : #{v.number} | t : #{v.t} | s : #{v.s} \n"
-      end
+
 
     end
 

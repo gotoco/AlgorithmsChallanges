@@ -24,7 +24,7 @@ class Graph
   end
 
   #Simple method to write whole graph structure
-  def write
+  def write_graph
     @vertexes.each_with_index  do |vertex, index|
       print "\n #{index} :  "
       # For each edges that come out from vertex with number x
@@ -98,26 +98,31 @@ class Graph
     s = source_vertex_number
     #For each vertex in the graph is set to the initial value of the variable
     #t and s to -1. Source search has time equal to 0
-    @vertexes.each_index{|v, i| v.t=-1; v.s=-1}
+    @vertexes.each do |v|
+       if v != nil
+         v.t=-1; v.s=-1;
+       end
+    end
+
     @vertexes[s].t=0
 
     #BFS algorithm is implemented using a FIFO queue, which inserted
     #consecutive vertices are waiting to be processed
     qu = Array.new(@vertexes.size);
-    b = e = 0;
     #insert into queue source
-    qu[0] = s
+    qu[b = e = 0] = s
     #while we have vertexes in queue
     while(b <= e)
-      s=qu[b]; b+=b
+      s=qu[b]; b = b+1 ;
 
       #For each outgoing edge of the currently processed vertex,
       #if the vertex to which it leads has not yet been inserted into the
       #queue, insert it, and determine values of variables int t and int s
       @vertexes[s].each do |eg|
         if @vertexes[eg.v].t == -1
-            e+=e
-            @vertexes[qu[e]].t = @vertexes[s].t+1
+            e=e+1
+            qu[e] = eg.v
+            @vertexes[eg.v].t = @vertexes[s].t+1
             @vertexes[eg.v].s = s
         end
 
@@ -127,9 +132,25 @@ class Graph
 
   end
 
+  #Simply method that show graph structure after bfs algorithm
+  # it show each | Vertex : x | Time from source to v : t | Father in BFS tree : s |
+  def write_bfs
+    @vertexes.each do |v|
+      if v != nil
+        print " Vertex : #{v.number} | t : #{v.t} | s : #{v.s} \n"
+      end
+
+    end
+
+  end
+
+
   def dfs
 
   end
+
+  ##Read only accessor to vertexes.
+  attr_reader :vertexes
 
 end
 
@@ -158,6 +179,8 @@ class Vertex < Array
     super edges_list
     @o = object
     @number = vertex_number
+    @t = -1
+    @s = -1
   end
 
   ##Decorator access method
@@ -169,7 +192,7 @@ class Vertex < Array
   attr_accessor :o
   ##Public access to number of the vertex
   attr_accessor :number
-  ##Time/Dimmension from BFS source vertex
+  ##Time/Dimension from BFS source vertex
   # (-1 if this vertex is unreachable from source)
   attr_accessor :t
   ##Father in the BFS algorithm tree

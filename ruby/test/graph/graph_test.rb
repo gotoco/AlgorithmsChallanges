@@ -111,5 +111,39 @@ class GraphTest < MiniTest::Unit::TestCase
 
   end
 
+  def test_simple_dsf_for_graph
+    print "build simple graph with 6 vertex and 5 edges \n"
+
+    graph = Graph.new(6)
+
+    graph.add_edge_u(0, 1)
+    graph.add_edge_u(2, 3)
+    graph.add_edge_u(2, 4)
+    graph.add_edge_u(3, 5)
+    graph.add_edge_u(3, 6)
+    graph.add_edge_u(6, 5)
+
+    graph.write_graph
+
+    graph.dfs(3)
+    #########################################################################################
+    # For Given graph structure and source vertex s=3
+    # we expect BFS tree as follow
+    # NOTICE that result is dependent on the order of insertion edge of the graph
+    # graph.write_dfs will show us:
+    # Vertex : 0 | t : -1 | s : -1   <- undirected vertex
+    # Vertex : 1 | t : 1 | s : 2
+    # Vertex : 2 | t : 0 | s : -1    <- source in BFS algorithm
+    # Vertex : 3 | t : 2 | s : 1
+    # Vertex : 4 | t : 1 | s : 2
+    # Vertex : 5 | t : 1 | s : 2
+    #########################################################################################
+
+    graph.write_dfs
+
+
+
+  end
+
 end
 

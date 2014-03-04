@@ -159,7 +159,7 @@ class Graph
     ##Start!
     e=source_vertex_number
     #Create stack to handle processed vertexes
-    st = Array.new(@vertexes.size)
+    st = Array.new(@vertexes.size){|e| e=0}
     #Time zero, iterator zero, b-start search point
     t = -1; i = 0; b = 0;
     e == -1 ? e = @vertexes.size - 1 : b = e

@@ -168,35 +168,43 @@ class Graph
     @vertexes.each_index{|i|  @vertexes[i].d = @vertexes[i].f = @vertexes[i].s = -1;}
 
     #FOR EACH vertexes in the range [b..e], if vertex was unvisited..
+    # s : global source
     for s in b..e  ; if @vertexes[s].d == -1
         #Insert vertex on the stack and set it to the appropriate time of entry.
         #Vertex variable "f" is used as temporarily counter for unprocessed
         #Outgoing edges of the vertex
+
         t+=1 # time is going so increment time
+
         @vertexes[st[i]=s].d = t
         i+=1 #incremented iterator
         @vertexes[s].f = @vertexes[s].size
-
         #While stack is not empty..
            while(i>0)
-             sp = st[i-1]
+             #ts : temporary source
+             ts = st[i-1]
              #Parse the next Edge leading off from the current vertex or
              # remove it from the stack (when there is no edge anymore).
-             if @vertexes[sp].f == 0
+             if @vertexes[ts].f == 0
+
                t+=1 #time is going
-               @vertexes[sp].f = t; i-=1; #we have to iterate one v less
+
+               @vertexes[ts].f = t; i-=1; #we have to iterate one v less
              else
                #If vertex, to whose leading Edge, was not yet visited then..
-               lv = @vertexes[sp].f -= 1
-               sp = @vertexes[sp][lv].v
-               if @vertexes[sp].d == -1
+               vn = @vertexes[ts].f -= 1    # vertexes number to visit +1 because start from 0
+               ts = @vertexes[ts][vn].v     # change temporary source to next vertex
+               if @vertexes[ts].d == -1
                   #Set the number of vertex-father in the DFS tree, and set the number of unprocessed
                   #outgoing edges of the vertex
-                  @vertexes[sp].s = st[i-1]
-                  @vertexes[sp].f = @vertexes[sp].size
+                  @vertexes[ts].s = st[i-1]
+                  @vertexes[ts].f = @vertexes[ts].size
                   #Put current vertex on stack and set it entry time
-                  i+=1; t+=1 #we have new vertex on stack to process, and time is going
-                  @vertexes[st[i] = s].d = t;
+
+                  t+=1 #time is going
+
+                  @vertexes[st[i] = ts].d = t;
+                  i+=1;  #we have new vertex on stack to process,
                end
              end
            end

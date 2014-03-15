@@ -124,11 +124,13 @@ l = gets.to_i
 
   # Mark nodes to which any ant can enter because they are subtree
   tree.g.each_with_index {|vertex, index| tree.g[index].t = $INF}
-  for y in 0..k-1 do mark_subtree_as_blocked(tree, kpos[lst[y] = y], 0) end
+  for y in 0..k-1 do
+    lst[y] = y
+    mark_subtree_as_blocked(tree, kpos[lst[y]], 0)
+  end
 
   while len>0
       # Try to move each Ant which can make move
-    p "len : #{len}"
       for y in 0..len-1
         # If current Ant is in the same node as LadyBug - cast she out
         if kpos[lst[y]] == b then
@@ -142,23 +144,20 @@ l = gets.to_i
               lst[y] = -1
               # Move the Ant and block each nodes from its subtree
             else
-              mark_subtree_as_blocked(tree, kpos[lst[y]], t)
+              mark_subtree_as_blocked(tree, kpos[lst[y]] = e, t)
                tree.g[e].t = 0
             end
         end
-
       end
     # Update Ants list
     nlen = 0
-    for x in 0..len-1 do if lst[x] != -1 then lst[nlen+=1] = lst[x] end; end;
+    for x in 0..len-1 do if lst[x] != -1 then lst[nlen] = lst[x]; nlen+=1 end; end;
     len = nlen
     t+=1
   end
-
 end
-
 
 #End of algorithm : print result
 for i in 0..k-1
-  p  " #{kpos[i]+1} : #{knr[i]} "
+  p  "Ant nr: #{i} ,pos : #{kpos[i]+1} ,chased : #{knr[i]} "
 end

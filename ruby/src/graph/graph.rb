@@ -230,6 +230,10 @@ class Graph
   ##Read only accessor to vertexes.
   attr_reader :vertexes
 
+  def g()
+    return vertexes
+  end
+
 end
 
 #########################################################################

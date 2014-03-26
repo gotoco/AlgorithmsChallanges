@@ -39,3 +39,43 @@
 # The first and only line of the output should be one integer equal to the total time of Byteasar.
 #
 ########################################################################################################################
+
+#Libraries:
+require "../graph"
+
+class TravelingTree < Graph
+  #Extend vertices by an additional array "l" of ancestors
+  def initialize (vertex_object= Class.new do
+    def initialize
+      @l = Array.new
+    end
+    attr_accessor :l
+  end)
+     super vertex_object
+  end
+
+  #Return true if n is ancestor of vertex m in this tree
+  def is_ancestor(n, m)
+    return g[n].d <= g[m].d and g[n].f >= g[m].f
+  end
+
+  #Return the distance of vertex "b" to path leading from vertex "e" to tree root
+  def length_from_ancestor_to_root(vertex_b, vertex_e)
+    res= 0 ; p= g[b].l.size-1
+
+    #While vertex_b is not a ancestor of vertex_e...
+    while(!is_ancestor(vertex_b, vertex_e))
+      #Using calculated values of ancestors in "l" array move through top of the tree
+      # making for each time a step with size that is a power of 2
+      p= [p, g[b].l.size-1].min
+      while(p>0 and is_ancestor(g[b].l[p], e)) do p-=1 ; end
+      #Increse calculated distance of the size of step and make this step
+      res += (1<<p)
+
+    end
+
+    return result
+  end
+
+end
+

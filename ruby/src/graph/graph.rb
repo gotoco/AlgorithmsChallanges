@@ -14,7 +14,7 @@
 #########################################################################
 class Graph
 
-  def initialize(number_of_vertex)
+  def initialize(number_of_vertex, object=nil)
     @vertexes = Array.new(number_of_vertex)
     @vertexes.each_with_index{|v, i| @vertexes[i] = Vertex.new(nil, Array.new, i)}
   end

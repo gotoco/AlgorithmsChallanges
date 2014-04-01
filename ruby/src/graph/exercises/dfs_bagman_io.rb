@@ -45,22 +45,22 @@ require "../graph"
 
 class TravelingTree < Graph
   #Extend vertices by an additional array "l" of ancestors
-  def initialize (vertex_object= Class.new do
-    def initialize
-      @l = Array.new
-    end
-    attr_accessor :l
-  end)
-     super vertex_object
+  def initialize (number_of_nodes)
+    super number_of_nodes, vertex_object = Class.new do
+      def initialize
+        @l = Array.new end
+        attr_accessor :l
+      end
+
   end
 
   #Return true if n is ancestor of vertex m in this tree
   def is_ancestor(n, m)
-    return g[n].d <= g[m].d and g[n].f >= g[m].f
+    return ( g[n].d <= g[m].d and g[n].f >= g[m].f )
   end
 
   #Return the distance of vertex "b" to path leading from vertex "e" to tree root
-  def length_from_ancestor_to_root(vertex_b, vertex_e)
+  def lca(vertex_b, vertex_e)
     res= 0 ; p= g[b].l.size-1
 
     #While vertex_b is not a ancestor of vertex_e...
@@ -71,11 +71,65 @@ class TravelingTree < Graph
       while(p>0 and is_ancestor(g[b].l[p], e)) do p-=1 ; end
       #Increse calculated distance of the size of step and make this step
       res += (1<<p)
-
+      b = g[b].l[p]
     end
 
     return result
   end
 
+  #This function calculate each value of arrays "l" for each tree nodes.For given vertex v
+  # subsequent elements of array "l" represents vertexes numbers with range 1, 2, 4 ..
+  # from vertex v to the root of tree (vertex nr. 0)
+  def gen_lca(vertex)
+    if vertex != 0 and g[vertex].l.size > 0
+      c = g[vertex].s
+      #Calculate list "l" for father of "v"
+      gen_lca(c)
+      #Put into list "l" of vertex "v" his father as a first element
+      g[vertex].l.push(c)
+      #Using LCA array of ancestors for calculate a result for vertex "v"
+      while g[c].l.size >= g[vertex].l.size
+        c = g[c].l[g[vertex].l.size-1]
+        g[vertex].l.push(c)
+      end
+    end
+  end
+
 end
 
+##Lets start!
+
+#Given:
+  n=0; m=0; b=0; e=0;
+#Load a tree structure on which Byteasar will travel
+puts "Enter number of Nodes : "
+n = gets.to_i
+
+tree = TravelingTree.new n
+
+#Load connection in graph
+for i in 1..n-1
+  puts "insert next connection in tree between 'a' : 'b' - "
+  a = gets.to_i
+  b = gets.to_i
+  tree.add_edge_u(a-1, b-1)
+end
+
+#Run DFS algorithm, and next calculate values of LCA lists for vertexes
+tree.dfs(0)
+for x in 1..n-1 do tree.gen_lca(x) end
+
+#Load length of Byteasar travel and start place
+  m = gets.to_i
+  b = gets.to_i
+  result = 0
+
+#For next target calculate its length and increase a result
+for x in 0..m-1
+  puts "insert next target : "
+  e = gets.to_i
+  result += tree.lca(b-1, e-1) + lca(e-1, b-1)
+  b = e
+end
+
+puts "The result is : #{result} "

@@ -1,30 +1,50 @@
-class SccGraphTest
 
-  def initialize(v, c)
-    @v = v
-    @c = c
-  end
 
-  attr_accessor :v
-  attr_accessor :c
+require '../../../ruby/src/graph/graph_extensions/scc_graph'
+require 'set'
+require 'minitest/unit'
+require 'minitest/autorun'
 
-end
+class SccGraphTest < MiniTest::Unit::TestCase
 
-array = [SccGraphTest.new(0,0),
- SccGraphTest.new(1,0),
-SccGraphTest.new(2,2),
-SccGraphTest.new(3,2),
-SccGraphTest.new(4,2),
-SccGraphTest.new(5,1),
-SccGraphTest.new(6,3),
-SccGraphTest.new(7,4)]
+  def test_simple_scc
+    print "build simple graph with 8 vertex and 10 directed edges \n"
 
-#print array
+    graph = SccGraph.new(8)
 
+    graph.add_edge_d(0, 1)
+    graph.add_edge_d(1, 0)
+    graph.add_edge_d(0, 7)
+    graph.add_edge_d(1, 6)
+    graph.add_edge_d(6, 7)
+    graph.add_edge_d(1, 2)
+    graph.add_edge_d(1, 3)
+    graph.add_edge_d(3, 2)
+    graph.add_edge_d(2, 4)
+    graph.add_edge_d(4, 3)
+    graph.add_edge_d(5, 3)
+
+
+    graph.scc_graph
+
+    graph.write_scc
+
+    #########################################################################################
+    # We expect graph with given structure with 5 separate components
+    # 0 :   0, 1
+    # 1 :   5
+    # 2 :   2, 3, 4
+    # 3 :   6
+    # 4 :   7
+    #########################################################################################
 =begin
-grouped_array = array.group_by{|e| e.c}.values
-   print  "\n grupuje! \n"
-print grouped_array
+    assert(Set.new(graph.get_vertex(0).map { |v| v.v} )  == Set.new([1]) )
+    assert(Set.new(graph.get_vertex(1).map { |v| v.v} )  == Set.new([2]) )
+    assert(Set.new(graph.get_vertex(2).map { |v| v.v} )  == Set.new([4]) )
+    assert(Set.new(graph.get_vertex(3).map { |v| v.v} )  == Set.new([4, 2]) )
+    assert(Set.new(graph.get_vertex(4).map { |v| v.v} )  == Set.new([1, 0, 3]) )
 =end
 
-array.group_by{|e| e.c}.values.each{|component| print "#{component.first.c} : "; component.each{|vertex| print "#{vertex.v}, "}; print "\n"}
+  end
+
+end

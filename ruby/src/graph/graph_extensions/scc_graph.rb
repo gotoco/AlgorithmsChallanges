@@ -47,7 +47,7 @@ class SccsGraph < Graph
   end
 
 ##
-#  Function passing graph for the help of the DFS algorithm.
+#Function passing graph for the help of the DFS algorithm.
 # It is used twice: in the first phase when determining the order of vertices for the second phase,
 # then during the second phase to determine the strongly consistent component and then
 # construction graph of strongly consistent components
@@ -69,22 +69,26 @@ def scc_dsf(v, nr, first_phase)
     if it.c == -1
       scc_dsf(it.v, nr, first_phase)
     elsif (!first_phase and nr > @vis[it.v] )
-      @scc_res.add_edge_d(g[it.v].t, vis[it.v]=nr);
+      @scc_res.add_edge_d(g[it.v].c, vis[it.v]=nr);
     end
   end #each
 
   #If the first phase is executed, insert a vertex to the list,
-  # and if the second, then update its time
-  if first_phase then vis.push(v); else g[v].t = nr; end
+  # or if the second update its time
+  if first_phase then vis.push(v); else g[v].c = nr; end
 
 end
 
+##
 #Function defining strongly connected components in a graph and return it as result
 # * *Args*    :  nil
 # * *Return*    :  result is a constructed strongly consistent component graph
+##
 def scc_graph()
   #Graf "gt" is a graph transposed, and "res" is constructed graph strongly consistent component
   gt = Graph.new(g.size, Component);  res = Graph.new(g.size, Component)
+  tab = [self, gt]
+  #prepare "gt"
   gt.scc_res=res; gt.vis.resize(g.size, -1); vis.clear;
 
   #Building a transposed graph
@@ -94,12 +98,43 @@ def scc_graph()
     end
   end
 
-  [false, true].each do |phase|
+  #perform two phases of algorithm dfs :
+  [0, 1].each_with_index do |i, index|
+    #mark vertexes as unvisited
+    tab[i].g.each do |v| v.c = -1 end
+    comp = 0; v = 0;
+
+    #for subsequent vertexes make searching
+    for j in g.size-1..0
+
+      i==1 ? v=vis[j] : j
+      #if vertex is without component
+      if tab[i].g[v].c == -1
+        is_first_phase = (1-i != 0)
+        tab[i].scc_dsf(v, comp, is_first_phase)
+      end
+    end
+
+    if i==1 then res.g.resize(comp) end
 
   end
 
+  for i in 0..g.size do g[i].c = gt.g[i].c end
+
+  return res
 end
 
+##
+#Write each strongly connected components from self graph
+# In first column write number of component then in second col vertexes that
+# belongs to this component
+#
+# Output - <ComponentNumber> : <List of vertices belonging,..>
+#           ..               : ..
+#           ...
+def write_scc
+    g.group_by{|e| e.c}.values.each{|component| print "#{component.first.c} : "; component.each{|vertex| print "#{vertex.v}, "}; print "\n"}
+end
 
   ##Additional fields:
   #

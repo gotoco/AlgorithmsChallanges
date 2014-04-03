@@ -230,6 +230,7 @@ class Graph
   ##Read only accessor to vertexes.
   attr_reader :vertexes
 
+  ##Shortcuts :
   def g()
     return vertexes
   end
@@ -276,22 +277,27 @@ class Vertex < Array
 
   ##Public access to decorated object
   attr_accessor :o
-
+  #
   ##Public access to number of the vertex
   attr_accessor :number
-
+  #
   ##Time/Dimension from BFS source vertex
   # (-1 if this vertex is unreachable from source)
   attr_accessor :t
-
+  #
   ##Father in the BFS algorithm tree
   attr_accessor :s
-
+  #
   ##Enter time of DFS algorithm
   attr_accessor :d
-
+  #
   ##Exit time of DFS algorithm
   attr_accessor :f
+
+  ##Shortcuts :
+  def v()
+    return number
+  end
 
 end
 

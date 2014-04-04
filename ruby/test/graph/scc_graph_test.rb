@@ -1,5 +1,3 @@
-
-
 require '../../../ruby/src/graph/graph_extensions/scc_graph'
 require 'set'
 require 'minitest/unit'

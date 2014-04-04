@@ -1,17 +1,5 @@
 require "../graph"
 
-#Extension to Vertexes in strongly connected component graph
-# it has additional field "c" it contains information
-# about the component to which it belongs
-class Component
-  def initialize
-    #At start we didn't has component
-    # to which we belongs
-    @c = -1
-  end
-  attr_accessor :c
-end
-
 #strongly_connected_component
 ########################################################################################################################
 #In the mathematical theory of directed graphs, a graph is said to be strongly connected
@@ -133,7 +121,7 @@ end
 #           ..               : ..
 #           ...
 def write_scc
-    g.group_by{|e| e.c}.values.each{|component| print "#{component.first.c} : "; component.each{|vertex| print "#{vertex.v}, "}; print "\n"}
+    g.group_by{|v| v.c}.values.each{|component| print "#{component.first.c} : "; component.each{|vertex| print "#{vertex.v}, "}; print "\n"}
 end
 
   ##Additional fields:
@@ -144,5 +132,16 @@ end
   ##Reference to the constructed graph of strongly consistent component
   attr_accessor :scc_res
 
+end
 
+#Extension to Vertexes in strongly connected component graph
+# it has additional field "c" it contains information
+# about the component to which it belongs
+class Component
+  def initialize
+    #At start we didn't has component
+    # to which we belongs
+    @c = -1
+  end
+  attr_accessor :c
 end

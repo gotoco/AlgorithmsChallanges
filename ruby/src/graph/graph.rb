@@ -16,7 +16,7 @@ class Graph
 
   def initialize(number_of_vertex, object=nil)
     @vertexes = Array.new(number_of_vertex)
-    @vertexes.each_with_index{|v, i| @vertexes[i] = Vertex.new(object.new, Array.new, i)}
+    @vertexes.each_with_index{|v, i| @vertexes[i] = Vertex.new(object==nil ? nil : object.new, Array.new, i)}
   end
 
   #Simple method to write whole graph structure

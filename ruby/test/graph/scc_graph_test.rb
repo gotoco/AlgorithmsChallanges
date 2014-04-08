@@ -35,13 +35,17 @@ class SccGraphTest < MiniTest::Unit::TestCase
     # 3 :   6
     # 4 :   7
     #########################################################################################
-=begin
-    assert(Set.new(graph.get_vertex(0).map { |v| v.v} )  == Set.new([1]) )
-    assert(Set.new(graph.get_vertex(1).map { |v| v.v} )  == Set.new([2]) )
-    assert(Set.new(graph.get_vertex(2).map { |v| v.v} )  == Set.new([4]) )
-    assert(Set.new(graph.get_vertex(3).map { |v| v.v} )  == Set.new([4, 2]) )
-    assert(Set.new(graph.get_vertex(4).map { |v| v.v} )  == Set.new([1, 0, 3]) )
-=end
+
+    assert(graph[0].c  == 0 )
+    assert(graph[1].c  == 0 )
+    assert(graph[2].c  == 2 )
+    assert(graph[3].c  == 2 )
+    assert(graph[4].c  == 2 )
+    assert(graph[5].c  == 1 )
+    assert(graph[6].c  == 3 )
+    assert(graph[7].c  == 4 )
+
+
 
   end
 

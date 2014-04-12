@@ -1,4 +1,4 @@
-require '../../../ruby/src/graph/graph_extensions/scc_graph'
+require_relative '../../../ruby/src/graph/graph_extensions/scc_graph'
 require 'set'
 require 'minitest/unit'
 require 'minitest/autorun'
@@ -8,7 +8,7 @@ class SccGraphTest < MiniTest::Unit::TestCase
   def test_simple_scc
     print "build simple graph with 8 vertex and 10 directed edges \n"
 
-    graph = SccGraph.new(8)
+    graph = SccsGraph.new(8)
 
     graph.add_edge_d(0, 1)
     graph.add_edge_d(1, 0)

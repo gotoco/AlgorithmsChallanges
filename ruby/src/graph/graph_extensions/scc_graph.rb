@@ -1,4 +1,4 @@
-require "../graph"
+require_relative "../graph"
 
 #strongly_connected_component
 ########################################################################################################################
@@ -28,8 +28,8 @@ require "../graph"
 class SccsGraph < Graph
 
   #Extend vertices by an additional array "l" of ancestors
-  def initialize (number_of_nodes)
-    super number_of_nodes, Component
+  def initialize (number_of_nodes, component=nil)
+    super number_of_nodes, component == nil ?  Component : component
     @vis = Array.new
     @scc_res = nil ##Graph.new(number_of_nodes, Component)
   end
@@ -74,10 +74,10 @@ end
 ##
 def scc_graph()
   #Graf "gt" is a graph transposed, and "res" is constructed graph strongly consistent component
-  gt = Graph.new(g.size, Component);  res = Graph.new(g.size, Component)
+  gt = SccsGraph.new(g.size, Component);  res = SccsGraph.new(g.size, Component)
   tab = [self, gt]
   #prepare "gt"
-  gt.scc_res=res; gt.vis.resize(g.size, -1); vis.clear;
+  gt.scc_res=res; gt.vis = Array.new(g.size){-1}; vis.clear;
 
   #Building a transposed graph
   for i in 0..g.size
@@ -103,7 +103,7 @@ def scc_graph()
       end
     end
 
-    if i==1 then res.g.resize(comp) end
+    if i==1 then res.g = Array.new(comp) end
 
   end
 
@@ -131,6 +131,11 @@ end
   #
   ##Reference to the constructed graph of strongly consistent component
   attr_accessor :scc_res
+
+  ##Shortcuts :
+  def g()
+    return @vertexes
+  end
 
 end
 
